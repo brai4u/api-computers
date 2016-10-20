@@ -11,13 +11,31 @@
 |
 */
 
+
+Route::group(['middleware' => ['api','cors'],'prefix' => 'api'], function () {
+    Route::post('register', 'APIController@register');
+    Route::post('login', 'APIController@login');
+
+});
+
+Route::group(['middleware' => 'jwt-auth'], function () {
+	Route::post('get_user_details', 'APIController@get_user_details');
+	Route::put('monitor/{monitor_id}/client/{client_id}/', 'MonitorController@addMonitorClient');
+	Route::put('computer/{computer_id}/client/{client_id}/', 'ComputerController@addComputerClient');
+});
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::put('monitor/{monitor_id}/client/{client_id}/', 'MonitorController@addMonitorClient');
-Route::put('computer/{computer_id}/client/{client_id}/', 'ComputerController@addComputerClient');
+// NOT JWT
+//Route::put('monitor/{monitor_id}/client/{client_id}/', 'MonitorController@addMonitorClient');
+//Route::put('computer/{computer_id}/client/{client_id}/', 'ComputerController@addComputerClient');
 
 Route::resource('client', 'ClientController');
 Route::resource('computer', 'ComputerController');
 Route::resource('monitor', 'MonitorController');
+
+Route::auth();
+
+Route::get('/home', 'HomeController@index');
