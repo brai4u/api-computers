@@ -119,7 +119,16 @@ class ComputerController extends Controller
     public function destroy($id)
     {
         $computer = Computer::find($id);
-        $computer->delete();
+
+        if($computer){
+            if($computer->delete()){
+                return response()->json(["Status" => "Ok"], 200);
+            }else{
+                return response()->json(["Status" => "No delete"], 500);
+            }
+        }else{
+            return response()->json(["Status" => "Computer not exist"], 500);
+        }
     }
 
 
